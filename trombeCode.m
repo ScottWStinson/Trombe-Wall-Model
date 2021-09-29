@@ -1,16 +1,21 @@
 % Trombe Wall Project
 %Scott Stinson
-%Alex Eslinger
 clc,clear,close all;
 
+tic
 
+TKelv=273.15;
 days=input('How many days do you want to run this simulation? \n\n');
-Tamb=xlsread('weather2',1,'G2:G25')+273.15;
+Tamb=xlsread('weather2',1,'G2:G25')+TKelv;
 qsolar=xlsread('weather2',1,'I2:I25');
 i=1;
 u=1;
 d=1;
 n=1;
+T = zeros(1, days*24*4);
+qs = zeros(1, days*24*4);
+
+
 while d <= days
     while n<=24
         while i<=4
@@ -28,15 +33,25 @@ end
 Tamb=T;
 qsolar=qs;
 i=1;
-T0(1)=20+273.15;
-T6(1)=20+273.15;
+
+T0 = zeros(1, days*24*4);
+T1 = zeros(1, days*24*4);
+T2 = zeros(1, days*24*4);
+T3 = zeros(1, days*24*4);
+T4 = zeros(1, days*24*4);
+T5 = zeros(1, days*24*4);
+T6 = zeros(1, days*24*4);
+
+
+T0(1)=20+TKelv;
+T6(1)=20+TKelv;
 k=0.7; %W/m K
 % at t = 0
-T1(1)=20+273.15;
-T2(1)=20+273.15;
-T3(1)=20+273.15;
-T4(1)=20+273.15;
-T5(1)=20+273.15;
+T1(1)=20+TKelv;
+T2(1)=20+TKelv;
+T3(1)=20+TKelv;
+T4(1)=20+TKelv;
+T5(1)=20+TKelv;
 
 while i<24*4*days
 
@@ -55,9 +70,13 @@ delx=0.05;
 delt=900;
 t=1:1:i;
 n=1;
+
+q = zeros(1, days*24*4);
+qinside = zeros(1, days*24*4);
+
 while n<=24*4*days
 q(n)=(T6(n)-Tamb(n))*k/delx;
-qinside(n)=abs(((20+273.15)-T0(n)))*k/delx;
+qinside(n)=abs(((20+TKelv)-T0(n)))*k/delx;
 n=n+1;
 end
 
@@ -72,7 +91,7 @@ legend('q front','q inside','location','Northwest')
 hold off
 
 subplot(2,1,2);
-plot(t,T0-273.15,t,T1-273.15,t,T2-273.15,t,T3-273.15,t,T4-273.15,t,T5-273.15,t,T6-273.15);
+plot(t,T0-TKelv,t,T1-TKelv,t,T2-TKelv,t,T3-TKelv,t,T4-TKelv,t,T5-TKelv,t,T6-TKelv);
 grid on
 title('Nodal temperatures vs Time')
 legend('T0','T1','T2','T3','T4','T5','T6','location','Northwest'); 
@@ -93,4 +112,6 @@ radiantqout=emis*sigma*(T6(249)^4-Tamb(249)^4);
 radiantqin=emis*sigma*(T6(249)^4-296.15^4);
 fprintf('\nThe radiant heat flux to the surrounds if the temperature between the\n wall and the glass is the same as the ambient temperature is: %0.2f W/m^2\n',radiantqout);
 fprintf('\nThe radiant heat flux to the surrounds if the temperature between the\n wall and the glass is the same as the indoor environment is: %0.2f W/m^2\n',radiantqin);
+
+toc
 
